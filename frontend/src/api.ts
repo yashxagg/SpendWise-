@@ -1,10 +1,11 @@
 import axios from 'axios';
 
-// Use the production URL only in production builds. 
-// In development, use '/api' to leverage the Vite proxy (which points to localhost:8000).
-const API_BASE_URL = import.meta.env.PROD 
-  ? 'https://spendwise-api-5fy4.onrender.com' 
-  : '/api';
+// Use the production URL only when deployed. 
+// Locally, use '/api' to leverage the Vite proxy (which points to localhost:8000).
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE_URL = isLocalhost 
+  ? '/api' 
+  : 'https://spendwise-api-5fy4.onrender.com';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
