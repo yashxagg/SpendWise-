@@ -14,6 +14,20 @@ load_dotenv()
 # Create tables
 models.Base.metadata.create_all(bind=engine)
 
+# Auto-seed database if empty
+from database import SessionLocal
+db = SessionLocal()
+try:
+    if not db.query(models.Family).first():
+        family = models.Family(name="Aggarwal Family", budget_limit=50000.0)
+        db.add(family)
+        db.commit()
+        yash = models.User(name="Yash", email="yash@spendwise.com", family_id=family.id)
+        db.add(yash)
+        db.commit()
+finally:
+    db.close()
+
 app = FastAPI(title="SpendWise API")
 
 # CORS middleware for React frontend
