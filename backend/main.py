@@ -77,6 +77,13 @@ def create_family(family: schemas.FamilyCreate, db: Session = Depends(get_db)):
     db.refresh(db_family)
     return db_family
 
+@app.get("/families/first", response_model=schemas.Family)
+def get_first_family(db: Session = Depends(get_db)):
+    family = db.query(models.Family).first()
+    if not family:
+        raise HTTPException(status_code=404, detail="Family not found")
+    return family
+
 @app.get("/families/{family_id}", response_model=schemas.Family)
 def get_family(family_id: int, db: Session = Depends(get_db)):
     family = db.query(models.Family).filter(models.Family.id == family_id).first()

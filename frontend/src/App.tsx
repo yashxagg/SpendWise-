@@ -47,18 +47,23 @@ const App: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const [statsRes, familyRes, transRes] = await Promise.all([
-        getDashboardStats(1),
-        getFamilies(),
-        getFamilyTransactions(1)
+      const familyRes = await getFamilies();
+      const currentFamilyId = familyRes.id;
+      
+      const [statsRes, transRes] = await Promise.all([
+        getDashboardStats(currentFamilyId),
+        getFamilyTransactions(currentFamilyId)
       ]);
+      
       setStats(statsRes);
       setFamilyData(familyRes);
       setAllTransactions(transRes);
       setNewBudget(familyRes.budget_limit.toString());
       
-      if (familyRes.users.length > 0 && !newTransaction.user_id) {
-        setNewTransaction(prev => ({...prev, user_id: familyRes.users[0].id}));
+      if (familyRes.users.length > 0 && (!newTransaction.user_id || newTransaction.user_id === 1)) {
+        setNewTransaction(prev => ({...prev, user_id: familyRes.users[0].id, family_id: currentFamilyId}));
+      } else {
+        setNewTransaction(prev => ({...prev, family_id: currentFamilyId}));
       }
     } catch (error) {
       console.error("Failed to fetch data:", error);
@@ -155,7 +160,7 @@ const App: React.FC = () => {
       await createUser({
         name: newMemberName,
         email: `${newMemberName.toLowerCase().replace(/\s/g, '')}@spendwise.com`,
-        family_id: 1
+        family_id: familyData?.id || 1
       });
       setNewMemberName('');
       setIsMemberModalOpen(false);
@@ -168,7 +173,7 @@ const App: React.FC = () => {
   const handleUpdateBudget = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await updateFamily(1, { budget_limit: parseFloat(newBudget) });
+      await updateFamily(familyData?.id || 1, { budget_limit: parseFloat(newBudget) });
       setIsBudgetModalOpen(false);
       fetchData();
     } catch (error) {
@@ -594,7 +599,7 @@ const App: React.FC = () => {
       setQuery('');
       setIsThinking(true);
       try {
-        const res = await askAI(1, userQ);
+        const res = await askAI(familyData?.id || 1, userQ);
         setChat(prev => [...prev, {role: 'ai', text: res.answer}]);
         setChatHistory(prev => [...prev, {role: 'ai', text: res.answer}]);
       } catch (e) {

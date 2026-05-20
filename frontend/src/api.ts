@@ -33,7 +33,7 @@ export const getFamilyTransactions = async (familyId: number) => {
 
 export const getFamilies = async () => {
     // This is a helper for the MVP to just get the first family
-    const response = await api.get('/families/1');
+    const response = await api.get('/families/first');
     return response.data;
 }
 
