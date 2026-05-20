@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --radius-3xl: 20px;
+  
+  --color-pastel-green: #D4EDDA;
+  --color-pastel-red: #F8D7DA;
+  --color-pastel-blue: #CCE5FF;
+  --color-pastel-yellow: #FFF3CD;
+  --color-pastel-purple: #E2E3E5;
+  
+  --font-sans: "Outfit", "Inter", "system-ui", "sans-serif";
+}
+
+@layer base {
+  body {
+    @apply bg-white text-slate-900 font-sans;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+.glass-card {
+  @apply bg-white/80 backdrop-blur-md border border-slate-100 shadow-sm;
+}
+
+.premium-shadow {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+}
+
+/* Custom Scrollbar for mobile feel */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
